@@ -1,0 +1,2 @@
+# Lighthouse Client Functions
+- LighthouseConfig
