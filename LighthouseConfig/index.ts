@@ -1,6 +1,10 @@
-import { AppConfigurationClient } from '@azure/app-configuration';
+import {
+  AppConfigurationClient,
+  ConfigurationSetting,
+} from '@azure/app-configuration';
 import { AzureFunction, Context, HttpRequest } from '@azure/functions';
 import { DefaultAzureCredential } from '@azure/identity';
+import { decrypt } from './crypt';
 
 const credential = new DefaultAzureCredential();
 const client = new AppConfigurationClient(
@@ -8,33 +12,32 @@ const client = new AppConfigurationClient(
   credential
 );
 
-// const connectionEndpoint = process.env.APP_CONFIG_ENDPOINT;
-// const connectionString = process.env['APPCONFIG_CONNECTION_STRING'] || '';
-// const client = new AppConfigurationClient(connectionString);
-
 async function run(context: Context, request: HttpRequest) {
-  const fusion = await client.getConfigurationSetting({
-    key: 'fusion-scope',
+  const environmentId = decrypt(
+    'environmentId',
+    request.query.environmentId || ''
+  );
+
+  const response = await client.listConfigurationSettings({
+    labelFilter: environmentId,
   });
-  const clientId = await client.getConfigurationSetting({
-    key: 'lighthouse',
-  });
-  const procosys = await client.getConfigurationSetting({
-    key: 'procosys-scopt',
-  });
-  const tenant = await client.getConfigurationSetting({
-    key: 'tenant',
-  });
+
+  const settings: ConfigurationSetting<string>[] = [];
+  for await (const setting of response) {
+    settings.push(setting);
+  }
+
+  const settingsBody = settings.reduce((acc, item) => {
+    acc[item.key.toString()] = JSON.parse(item.value);
+    return acc;
+  }, {} as { [key: string]: string });
 
   context.res = {
     // status: 200, /* Defaults to 200 */
     body: {
-      fusion: fusion.value,
-      procosys: procosys.value,
-      clientId: clientId.value,
-      tenant: tenant.value,
       host: request.headers.host,
       url: request.url,
+      ...settingsBody,
     },
   };
 }
