@@ -15,6 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/LighthouseConfig/index.js"
+  "scriptFile": "../dist/clientConfig/index.js"
 }
-
