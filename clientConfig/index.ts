@@ -63,6 +63,7 @@ async function run(context: Context, request: HttpRequest) {
         host: request.headers.host,
         url: request.url,
         ...settingsBody,
+        isProduction: environmentId === 'prod',
       },
     };
   } else {
