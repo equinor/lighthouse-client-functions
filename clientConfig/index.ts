@@ -16,7 +16,7 @@ function isValid(id: string): boolean {
   switch (id) {
     case 'prod':
     case 'dev':
-    case 'qa':
+    case 'test':
       return true;
     default:
       return false;
@@ -62,8 +62,8 @@ async function run(context: Context, request: HttpRequest) {
       body: {
         host: request.headers.host,
         url: request.url,
-        ...settingsBody,
         isProduction: environmentId === 'prod',
+        ...settingsBody,
       },
     };
   } else {
