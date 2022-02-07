@@ -68,7 +68,55 @@ stages:
     jobs:
       - template: /src/resources/web-client/jobs/client-function-deploy.yml@templates
         parameters:
-          deploymentName: 'deploy_web'
+          deploymentName: 'deploy_function'
+          dependsOn: ''
+          serviceConnection: '${{ variables.serviceConnection }}'
+          rgName: '${{variables.rgName}}'
+          envGroup: '${{ variables.envGroupName }}'
+          repository: '${{ variables.repositoryName }}'
+          containerRegistry: '${{ variables.containerRegistry }}'
+          appName: '${{ variables.functionAppName }}'
+
+  # Deploy to test environment
+  - stage: test
+    displayName: 'Deploy to test'
+    dependsOn: 'build'
+    variables:
+      envName: 'test'
+      envLabel: 'non-prod'
+      rgName: '${{ variables.envRgName }}'
+      envGroupName: '$(globalPrefix)-$(fullAppName)-function-${{ variables.envName }}'
+      serviceConnection: '${{ variables.nonProdServiceConnection }}'
+      containerRegistry: '${{ variables.containerRegistryName }}'
+
+    jobs:
+      - template: /src/resources/web-client/jobs/client-function-deploy.yml@templates
+        parameters:
+          deploymentName: 'deploy_function'
+          dependsOn: ''
+          serviceConnection: '${{ variables.serviceConnection }}'
+          rgName: '${{variables.rgName}}'
+          envGroup: '${{ variables.envGroupName }}'
+          repository: '${{ variables.repositoryName }}'
+          containerRegistry: '${{ variables.containerRegistry }}'
+          appName: '${{ variables.functionAppName }}'
+
+  # Deploy to prod environment
+  - stage: prod
+    displayName: 'Deploy to prod'
+    dependsOn: 'build'
+    variables:
+      envName: 'prod'
+      envLabel: 'prod'
+      rgName: '${{ variables.envRgName }}'
+      envGroupName: '$(globalPrefix)-$(fullAppName)-function-${{ variables.envName }}'
+      serviceConnection: '${{ variables.prodServiceConnection }}'
+      containerRegistry: '${{ variables.containerRegistryName }}'
+
+    jobs:
+      - template: /src/resources/web-client/jobs/client-function-deploy.yml@templates
+        parameters:
+          deploymentName: 'deploy_function'
           dependsOn: ''
           serviceConnection: '${{ variables.serviceConnection }}'
           rgName: '${{variables.rgName}}'
