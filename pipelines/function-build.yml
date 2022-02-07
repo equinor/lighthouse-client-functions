@@ -25,7 +25,7 @@ stages:
       envName: 'build'
       envRg: '${{ variables.envRgName }}'
       serviceConnection: '${{ variables.nonProdServiceConnection }}'
-      envGroupName: '$(globalPrefix)-$(fullAppName)-${{ variables.envName }}'
+      envGroupName: '$(globalPrefix)-$(fullAppName)-function-${{ variables.envName }}'
       dockerfilePath: './Dockerfile'
 
     jobs:
@@ -61,7 +61,7 @@ stages:
       envName: 'dev'
       envLabel: 'non-prod'
       rgName: '${{ variables.envRgName }}'
-      envGroupName: '$(globalPrefix)-$(fullAppName)-${{ variables.envName }}'
+      envGroupName: '$(globalPrefix)-$(fullAppName)-function-${{ variables.envName }}'
       serviceConnection: '${{ variables.nonProdServiceConnection }}'
       containerRegistry: '${{ variables.containerRegistryName }}'
 
