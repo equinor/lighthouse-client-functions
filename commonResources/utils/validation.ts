@@ -1,7 +1,7 @@
 import { SystemMessage } from "../types/systemMessage"
 
 export function systemMessageValidation(systemMessage?: SystemMessage): {  status: number , body: { message: string,  missingKeys?: string[]}} | string {
-    const keys = ["massage", "type", "fromDate", "toDate"]
+    const keys = ["message", "type", "fromDate", "toDate"]
     if (!systemMessage) {
         return {  
             status: 422,  

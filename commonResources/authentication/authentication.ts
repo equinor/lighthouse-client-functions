@@ -1,4 +1,8 @@
+
+import { HttpRequest } from "@azure/functions";
 import { ConfidentialClientApplication, LogLevel } from "@azure/msal-node";
+import jwt_decode from "jwt-decode";
+
 
 const config = {
     auth: {
@@ -17,9 +21,39 @@ const config = {
     }
 };
 
-export const cca = new ConfidentialClientApplication(config);
+export const confidentialClientApplication  = new ConfidentialClientApplication(config);
 
-export async function isAuthenticated(token: string) {
-    cca.acquireTokenSilent()
+export async function isAuthenticated( request: HttpRequest) {
+
+    const oboAssertion = request.headers["authorization"]?.replace("Bearer", "");
+    if (!oboAssertion) {
+        const error = new Error("No authorization token provided")
+        throw {
+            status: 401, 
+            body: { message: error.message },
+        };
+    }
+    
+    try {
+        const decoded   = jwt_decode(oboAssertion);
+    
+        if (process.env["SCOPE"].includes(decoded["aud"]) && decoded["aud"]  !== "") {
+            return request
+            
+        } else {
+            const error = new Error("Invalid scope")
+        throw {
+            status: 401, 
+            body: { message: error.message },
+        };
+        }
+    } catch (error) {
+        console.log("token ",error )
+        throw  error
+    }
+   
+ 
+
 
 }
+

@@ -3,20 +3,18 @@ import { SYSTEM_KEY } from "../constants/constants";
 import { systemMessageOutputValidation, systemMessageValidation } from "../utils/validation";
 import { appConfigurationClient } from "./appConfigurationClient";
 
-export async function getSystemMessage(context: Context, req: HttpRequest) {
+export async function getSystemMessage(context: Context, request: HttpRequest) {
     try{
         const result = await appConfigurationClient.getConfigurationSetting({key: SYSTEM_KEY})
         const systemMessage =  systemMessageOutputValidation(result.value)
         
         context.res = {
             // status: result.statusCode,
-            body: systemMessage
+            body: {...systemMessage},
+    
         };
     } catch (error) {
-        context.res = {
-            status: 500, 
-            body: { message: error}
-        };
+        context.res = error
     }
 }
 
@@ -28,11 +26,15 @@ export async function postSystemMessage(context: Context, req: HttpRequest) {
             
         context.res = {
             // status: 200, /* Defaults to 200 */
-            body: { status: "done", result }
+            body: { status: "done", result },
+     
+          
         };
     } catch (error) {
         context.res = {
-            ...error
+            ...error,
+     
         };
     }
 }
+
