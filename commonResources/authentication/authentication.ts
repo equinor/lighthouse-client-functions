@@ -25,8 +25,8 @@ export const confidentialClientApplication  = new ConfidentialClientApplication(
 
 export async function isAuthenticated( request: HttpRequest) {
 
-    const oboAssertion = request.headers["authorization"]?.replace("Bearer", "");
-    if (!oboAssertion) {
+    const token = request.headers["authorization"]?.replace("Bearer", "");
+    if (!token) {
         const error = new Error("No authorization token provided")
         throw {
             status: 401, 
@@ -35,7 +35,7 @@ export async function isAuthenticated( request: HttpRequest) {
     }
     
     try {
-        const decoded   = jwt_decode(oboAssertion);
+        const decoded   = jwt_decode(token);
     
         if (process.env["SCOPE"].includes(decoded["aud"]) && decoded["aud"]  !== "") {
             return request
