@@ -1,4 +1,8 @@
-trigger: none
+trigger:
+  branches:
+    include:
+      - main
+      - dev
 
 resources:
   repositories:
@@ -57,6 +61,7 @@ stages:
   - stage: dev
     displayName: 'Deploy to dev'
     dependsOn: 'build'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
     variables:
       envName: 'dev'
       envLabel: 'non-prod'
@@ -76,11 +81,13 @@ stages:
           repository: '${{ variables.repositoryName }}'
           containerRegistry: '${{ variables.containerRegistry }}'
           appName: '${{ variables.functionAppName }}'
+          kvName: '${{ variables.kvName }}'
 
   # Deploy to test environment
   - stage: test
     displayName: 'Deploy to test'
     dependsOn: 'build'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     variables:
       envName: 'test'
       envLabel: 'non-prod'
@@ -100,11 +107,13 @@ stages:
           repository: '${{ variables.repositoryName }}'
           containerRegistry: '${{ variables.containerRegistry }}'
           appName: '${{ variables.functionAppName }}'
+          kvName: '${{ variables.kvName }}'
 
   # Deploy to prod environment
   - stage: prod
     displayName: 'Deploy to prod'
-    dependsOn: 'build'
+    dependsOn: 'test'
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     variables:
       envName: 'prod'
       envLabel: 'prod'
@@ -124,3 +133,4 @@ stages:
           repository: '${{ variables.repositoryName }}'
           containerRegistry: '${{ variables.containerRegistry }}'
           appName: '${{ variables.functionAppName }}'
+          kvName: '${{ variables.kvName }}'
