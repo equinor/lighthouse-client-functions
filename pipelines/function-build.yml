@@ -87,7 +87,7 @@ stages:
   - stage: test
     displayName: 'Deploy to test'
     dependsOn: 'build'
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/main'))
     variables:
       envName: 'test'
       envLabel: 'non-prod'
