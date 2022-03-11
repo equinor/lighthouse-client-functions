@@ -1,4 +1,4 @@
-export interface SystemMessage {
+export interface ServiceMessage {
     id?: string;
     massage: string;
     type: string;

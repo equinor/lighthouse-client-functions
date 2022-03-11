@@ -1,8 +1,8 @@
-import { SystemMessage } from "../types/systemMessage"
+import { ServiceMessage } from "../types/serviceMessage"
 
-export function systemMessageValidation(systemMessage?: SystemMessage): {  status: number , body: { message: string,  missingKeys?: string[]}} | string {
+export function systemMessageValidation(serviceMessage?: ServiceMessage): {  status: number , body: { message: string,  missingKeys?: string[]}} | string {
     const keys = ["message", "type", "fromDate", "toDate"]
-    if (!systemMessage) {
+    if (!serviceMessage) {
         return {  
             status: 422,  
             body: {message: "No valid Body provided",  
@@ -11,7 +11,7 @@ export function systemMessageValidation(systemMessage?: SystemMessage): {  statu
     }
     const missingKeys: string[] = []
     keys.map(key => {
-        if(!Object.keys(systemMessage).includes(key)) {
+        if(!Object.keys(serviceMessage).includes(key)) {
             missingKeys.push(key) 
         }
     })
@@ -20,15 +20,15 @@ export function systemMessageValidation(systemMessage?: SystemMessage): {  statu
         return {  status: 422 , body: { message: "Key missing in body",  missingKeys} }
     }
 
-    if (isValidDate(systemMessage.fromDate)){
+    if (isValidDate(serviceMessage.fromDate)){
         return {  status: 422 , body: { message: "invalidDate fromDate" } }
     }
 
-    if (isValidDate(systemMessage.toDate)){
+    if (isValidDate(serviceMessage.toDate)){
         return {  status: 422 , body: { message: "invalidDate toDate" } }
     }
-    systemMessage.id = generateQuickGuid();
-    return JSON.stringify(systemMessage);
+    serviceMessage.id = generateQuickGuid();
+    return JSON.stringify(serviceMessage);
 }
 
 
@@ -38,7 +38,7 @@ function generateQuickGuid() {
 }
 
 
-export function systemMessageOutputValidation(data?: string): SystemMessage | undefined {
+export function systemMessageOutputValidation(data?: string): ServiceMessage | undefined {
 
 
     try{

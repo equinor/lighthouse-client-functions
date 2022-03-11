@@ -1,9 +1,9 @@
 import { Context, HttpRequest } from "@azure/functions";
 import { SYSTEM_KEY } from "../constants/constants";
-import { systemMessageOutputValidation, systemMessageValidation } from "../utils/validation";
+import { systemMessageOutputValidation, systemMessageValidation as serviceMessageValidation } from "../utils/validation";
 import { appConfigurationClient } from "./appConfigurationClient";
 
-export async function getSystemMessage(context: Context, request: HttpRequest) {
+export async function getServiceMessage(context: Context, request: HttpRequest) {
     try{
         const result = await appConfigurationClient.getConfigurationSetting({key: SYSTEM_KEY})
         const systemMessage =  systemMessageOutputValidation(result.value)
@@ -18,9 +18,9 @@ export async function getSystemMessage(context: Context, request: HttpRequest) {
     }
 }
 
-export async function postSystemMessage(context: Context, req: HttpRequest) {
+export async function postServiceMessage(context: Context, req: HttpRequest) {
     try{
-        const value = systemMessageValidation(req.body)
+        const value = serviceMessageValidation(req.body)
         if (typeof value !== "string") throw value;
             const result = await appConfigurationClient.setConfigurationSetting( {key: SYSTEM_KEY,  value })
             

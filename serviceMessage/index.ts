@@ -1,5 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import { getSystemMessage, postSystemMessage } from "../commonResources/appConfig/systemMessage";
+import { getServiceMessage, postServiceMessage } from "../commonResources/appConfig/serviceMessage";
 import { isAuthenticated } from "../commonResources/authentication/authentication";
 
 
@@ -11,9 +11,9 @@ const httpTrigger: AzureFunction = async function (
           const validRequest = await isAuthenticated(request)
           if (request.method === "GET") {
             
-              await getSystemMessage(context, validRequest);
+              await getServiceMessage(context, validRequest);
           } else {
-              await postSystemMessage(context, validRequest);
+              await postServiceMessage(context, validRequest);
           }
       } catch (error) {
         context.res = error 
