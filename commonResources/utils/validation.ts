@@ -27,8 +27,14 @@ export function systemMessageValidation(systemMessage?: SystemMessage): {  statu
     if (isValidDate(systemMessage.toDate)){
         return {  status: 422 , body: { message: "invalidDate toDate" } }
     }
-
+    systemMessage.id = generateQuickGuid();
     return JSON.stringify(systemMessage);
+}
+
+
+function generateQuickGuid() {
+    return Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
 }
 
 
