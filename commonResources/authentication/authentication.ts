@@ -35,9 +35,8 @@ export async function isAuthenticated( request: HttpRequest) {
     }
     
     try {
-        const decoded   = jwt_decode(token);
-    
-        if (process.env["SCOPE"].includes(decoded["aud"]) && decoded["aud"]  !== "") {
+        const decoded = jwt_decode(token);
+        if (JSON.stringify(decoded["aud"]).includes(process.env["AZURE_CLIENT_ID"]) && decoded["aud"]  !== "") {
             return request
             
         } else {
