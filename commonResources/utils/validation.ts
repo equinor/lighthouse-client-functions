@@ -51,7 +51,7 @@ export function systemMessageOutputValidation(
     const systemMessage = JSON.parse(data);
     const currentDate = new Date().getTime();
     const toDate = new Date(systemMessage?.toDate).getTime();
-    const fromDate = new Date(systemMessage?.fromDate).getDate();
+    const fromDate = new Date(systemMessage?.fromDate).getTime();
     if (currentDate <= fromDate && toDate >= currentDate) {
       return systemMessage;
     }
