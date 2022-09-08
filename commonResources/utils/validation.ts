@@ -52,7 +52,7 @@ export function systemMessageOutputValidation(
     const currentDate = new Date().valueOf();
     const toDate = new Date(systemMessage?.toDate).valueOf();
     const fromDate = new Date(systemMessage?.fromDate).valueOf();
-    if (currentDate <= fromDate && toDate >= currentDate) {
+    if (currentDate >= fromDate && toDate >= currentDate) {
       return systemMessage;
     }
 
